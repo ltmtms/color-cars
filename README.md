@@ -1,60 +1,52 @@
 # Colour-a-Car
 
-A warm, kid-friendly web activity: **print** a car outline, **colour** it on paper, **scan** it with a phone camera (OpenCV.js cuts the car out), and watch every car join a **bouncing parade** on the showcase screen.
+Kids **print** a car outline, **colour** it, **scan** with OpenCV in the browser, and watch cars join a **bouncing parade** on the showcase.
 
-## Live demo
+## Live (GitHub Pages)
 
-**Repo:** https://github.com/ltmtms/color-cars
-
-**Play online (HTTPS, camera-ready):** https://zippy-cedar-nvhb8wt.tmp.now
-
-This is a Vercel deployment (Next.js needs a Node host for `/api/*`). GitHub Pages is not enabled on the `ltmtms` account plan; to keep a permanent URL, [claim the deployment](https://vercel.com/claim-deployment?code=0cdc4861-91ce-4186-ae4b-e36048a2d397) or connect the GitHub repo in the Vercel dashboard.
-
-## Routes
+**https://ltmtms.github.io/color-cars/**
 
 | Route | Purpose |
 |--------|---------|
-| `/` | Home — quick start |
-| `/print` | A4-friendly car templates + QR to scan |
-| `/scan` | Camera / photo upload → OpenCV extraction → submit |
-| `/showcase` | Sunny scene; all cars bounce and steer; polls every 4s |
-| `GET /api/cars` | JSON list of cars |
-| `POST /api/cars` | `multipart/form-data` with `image` (PNG) |
-| `GET /api/cars/:id/image` | PNG cutout |
+| `/color-cars/` | Home |
+| `/color-cars/print/` | A4 templates + QR |
+| `/color-cars/scan/` | Camera / upload → OpenCV cutout |
+| `/color-cars/showcase/` | Animated parade |
 
-## How extraction works
+HTTPS is provided by GitHub Pages (required for camera access).
 
-1. A frame is captured from the camera (or an uploaded photo).
-2. [OpenCV.js](https://docs.opencv.org/4.x/opencv.js) loads in the browser.
-3. The image is scaled, converted to grayscale, and thresholded so **dark ink** (the printed outline + kid colouring) separates from **white paper**.
-4. Morphological close + **largest external contour** ≈ the car silhouette.
-5. That contour becomes an **alpha mask**; the background is transparent PNG.
-6. You preview the cutout, then POST it to the gallery API.
+## Gallery on Pages
+
+There is no Node server on GitHub Pages. The parade uses:
+
+- **Demo cars** — bundled under `public/gallery/` (from `data/` at build time)
+- **New scans** — saved in this browser’s `localStorage` (showcase on the same device/browser sees them; demo cars appear for everyone)
+
+OpenCV.js still runs fully in the browser for extraction.
 
 ## Run locally
 
 ```bash
 npm install
-npm run seed    # demo cars in data/ (also runs before build)
-npm run dev     # http://localhost:3000
+npm run dev
 ```
 
-Open **Print** → print on A4 → colour → **Scan** on a phone on the same network (or use upload) → **Showcase** on a projector.
+Open http://localhost:3000 (no `/color-cars` prefix locally).
 
-Camera needs a secure context (`https://` or `localhost`).
+## Build like CI (static export)
 
-## Production persistence
+```bash
+npm run build:pages
+```
 
-- **Local / Node:** PNG files in `data/images/` and `data/cars.json`.
-- **Vercel:** set `GITHUB_TOKEN` (repo scope) and `GITHUB_REPOSITORY=ltmtms/color-cars` so new scans are committed via the GitHub API and survive serverless restarts.
+Output in `out/` with `basePath` `/color-cars`.
 
-## Classroom flow (Stephen-style demo)
+## Deploy
 
-1. Open **Showcase** on the big screen.
-2. Hand out printed sheets from **Print**.
-3. Kids colour, then open **Scan** on phones (QR on the printout).
-4. Confirm the cutout → **Send to parade** — cars appear on the showcase within a few seconds.
+Pushes to `main` run `.github/workflows/deploy-pages.yml` (same pattern as [find-the-cat](https://github.com/ltmtms/find-the-cat)).
 
-## Stack
+## Classroom flow
 
-Next.js (App Router), TypeScript, Tailwind CSS, OpenCV.js, `sharp` for seed assets, optional GitHub-backed storage on Vercel.
+1. Open **Showcase** on the display (same browser you’ll scan from, or enjoy the six demo cars).
+2. **Print** sheets for kids.
+3. **Scan** on phone/laptop → confirm cutout → **Send to parade**.
