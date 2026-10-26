@@ -2,7 +2,11 @@ import fs from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
 import type { CarRecord, CarsIndex } from "./types";
-import { INDEX_PATH, IMAGES_DIR } from "./paths";
+import {
+  INDEX_PATH,
+  IMAGES_DIR,
+  ensureWritableDataBootstrapped,
+} from "./paths";
 import { ensureSeedCars } from "./seed-cars";
 import {
   githubPersistEnabled,
@@ -21,6 +25,7 @@ export async function readIndex(): Promise<CarsIndex> {
     const remote = await githubReadIndex();
     if (remote && remote.cars.length > 0) return remote;
   }
+  await ensureWritableDataBootstrapped();
   await ensureDirs();
   await ensureSeedCars();
   try {
@@ -47,6 +52,7 @@ export async function addCar(
   pngBuffer: Buffer,
   meta?: { displayName?: string }
 ): Promise<CarRecord> {
+  await ensureWritableDataBootstrapped();
   await ensureDirs();
   const id = randomUUID();
   const filename = `${id}.png`;

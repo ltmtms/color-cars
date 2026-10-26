@@ -2,7 +2,12 @@ import fs from "fs/promises";
 import sharp from "sharp";
 import { randomUUID } from "crypto";
 import { carOutlineSvg } from "./car-svg";
-import { INDEX_PATH, IMAGES_DIR, DATA_DIR } from "./paths";
+import {
+  INDEX_PATH,
+  IMAGES_DIR,
+  DATA_DIR,
+  ensureWritableDataBootstrapped,
+} from "./paths";
 import type { CarsIndex } from "./types";
 
 const SEED_COLORS = [
@@ -22,6 +27,7 @@ export async function ensureSeedCars() {
 }
 
 async function seedOnce() {
+  await ensureWritableDataBootstrapped();
   await fs.mkdir(IMAGES_DIR, { recursive: true });
   try {
     await fs.access(INDEX_PATH);
