@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Nunito", ui-rounded, system-ui, sans-serif;
+  --color-cream: #fff8f0;
+  --color-sky-soft: #d4f1ff;
+  --color-grass: #c8f0c4;
+  --color-peach: #ffd9c8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: linear-gradient(165deg, var(--color-cream) 0%, var(--color-sky-soft) 45%, var(--color-peach) 100%);
+  color: #334155;
+  font-family: var(--font-display);
+}
+
+@keyframes bounce-gentle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media print {
+  body {
+    background: white !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
