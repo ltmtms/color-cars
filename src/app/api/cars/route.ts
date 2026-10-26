@@ -1,9 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { addCar, listCars } from "@/lib/storage";
 
+function withCors(res: NextResponse) {
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type");
+  return res;
+}
+
+export async function OPTIONS() {
+  return withCors(new NextResponse(null, { status: 204 }));
+}
+
 export async function GET() {
   const cars = await listCars();
-  return NextResponse.json({
+  return withCors(NextResponse.json({
     cars: cars.map((c) => ({
       id: c.id,
       createdAt: c.createdAt,
@@ -11,7 +22,7 @@ export async function GET() {
       demo: c.demo,
       imageUrl: `/api/cars/${c.id}/image`,
     })),
-  });
+  }));
 }
 
 export async function POST(req: NextRequest) {
@@ -35,8 +46,10 @@ export async function POST(req: NextRequest) {
         : undefined,
   });
 
-  return NextResponse.json({
-    id: record.id,
-    imageUrl: `/api/cars/${record.id}/image`,
-  });
+  return withCors(
+    NextResponse.json({
+      id: record.id,
+      imageUrl: `/api/cars/${record.id}/image`,
+    })
+  );
 }

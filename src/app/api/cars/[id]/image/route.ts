@@ -15,6 +15,7 @@ export async function GET(_req: Request, { params }: Params) {
     headers: {
       "Content-Type": "image/png",
       "Cache-Control": "public, max-age=60",
+      "Access-Control-Allow-Origin": "*",
     },
   });
 }
