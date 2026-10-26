@@ -4,10 +4,11 @@ A warm, kid-friendly web activity: **print** a car outline, **colour** it on pap
 
 ## Live demo
 
-After deploy, the app is served over **HTTPS** (required for camera access):
+**Repo:** https://github.com/ltmtms/color-cars
 
-- **Primary (full app + API):** Vercel — see repo **Deployments** or the URL in the project README badge once linked.
-- **GitHub Pages (optional UI mirror):** `https://ltmtms.github.io/color-cars/` — static pages talk to the Vercel API when `NEXT_PUBLIC_API_BASE` is set in the Pages build.
+**Play online (HTTPS, camera-ready):** https://zippy-cedar-nvhb8wt.tmp.now
+
+This is a Vercel deployment (Next.js needs a Node host for `/api/*`). GitHub Pages is not enabled on the `ltmtms` account plan; to keep a permanent URL, [claim the deployment](https://vercel.com/claim-deployment?code=0cdc4861-91ce-4186-ae4b-e36048a2d397) or connect the GitHub repo in the Vercel dashboard.
 
 ## Routes
 
