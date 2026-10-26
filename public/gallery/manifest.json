@@ -1,0 +1,46 @@
+{
+  "cars": [
+    {
+      "id": "25a49cff-8922-4ac8-a5fe-ee5e3cc3d0d1",
+      "imageUrl": "/gallery/demo/25a49cff-8922-4ac8-a5fe-ee5e3cc3d0d1.png",
+      "displayName": "Sunny",
+      "createdAt": "2026-10-26T11:32:27.818Z",
+      "demo": true
+    },
+    {
+      "id": "411b92b3-07aa-476d-b850-8951f088141e",
+      "imageUrl": "/gallery/demo/411b92b3-07aa-476d-b850-8951f088141e.png",
+      "displayName": "Bubbles",
+      "createdAt": "2026-10-26T11:33:27.826Z",
+      "demo": true
+    },
+    {
+      "id": "fe9401b5-a6af-4cbf-8182-fdbc87c8187c",
+      "imageUrl": "/gallery/demo/fe9401b5-a6af-4cbf-8182-fdbc87c8187c.png",
+      "displayName": "Zoom",
+      "createdAt": "2026-10-26T11:34:27.834Z",
+      "demo": true
+    },
+    {
+      "id": "1309a1e1-8fc6-46c8-af0a-6878ec4a7f09",
+      "imageUrl": "/gallery/demo/1309a1e1-8fc6-46c8-af0a-6878ec4a7f09.png",
+      "displayName": "Peach",
+      "createdAt": "2026-10-26T11:35:27.840Z",
+      "demo": true
+    },
+    {
+      "id": "102e8a27-d9c4-4de4-a5b0-f632969f3969",
+      "imageUrl": "/gallery/demo/102e8a27-d9c4-4de4-a5b0-f632969f3969.png",
+      "displayName": "Sky",
+      "createdAt": "2026-10-26T11:36:27.847Z",
+      "demo": true
+    },
+    {
+      "id": "ea6d0d2f-4288-4f92-a2b6-0b204887215d",
+      "imageUrl": "/gallery/demo/ea6d0d2f-4288-4f92-a2b6-0b204887215d.png",
+      "displayName": "Berry",
+      "createdAt": "2026-10-26T11:37:27.852Z",
+      "demo": true
+    }
+  ]
+}

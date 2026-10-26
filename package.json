@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:pages": "npm run seed && node scripts/build-gallery-public.mjs && GITHUB_PAGES=true next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "seed": "node scripts/seed.mjs",
-    "prebuild": "npm run seed"
+    "prebuild": "npm run seed && node scripts/build-gallery-public.mjs"
   },
   "dependencies": {
     "next": "16.4.3",

@@ -1,7 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { apiUrl } from "@/lib/api-base";
+import {
+  GALLERY_UPDATE_EVENT,
+  listGalleryCars,
+  type GalleryCar,
+} from "@/lib/gallery-client";
 
 type CarSprite = {
   id: string;
@@ -16,24 +20,13 @@ type CarSprite = {
   scale: number;
 };
 
-type ApiCar = {
-  id: string;
-  imageUrl: string;
-  displayName?: string;
-};
-
-function resolveImageUrl(url: string) {
-  if (url.startsWith("http")) return url;
-  return apiUrl(url);
-}
-
 export function ShowcaseScene() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [cars, setCars] = useState<CarSprite[]>([]);
   const spritesRef = useRef<CarSprite[]>([]);
   const rafRef = useRef<number>(0);
 
-  const mergeCars = useCallback((apiCars: ApiCar[]) => {
+  const mergeCars = useCallback((apiCars: GalleryCar[]) => {
     const box = containerRef.current?.getBoundingClientRect();
     const w = box?.width ?? 800;
     const h = box?.height ?? 500;
@@ -41,11 +34,11 @@ export function ShowcaseScene() {
     const next: CarSprite[] = apiCars.map((c, i) => {
       const old = existing.get(c.id);
       if (old) {
-        return { ...old, imageUrl: resolveImageUrl(c.imageUrl), displayName: c.displayName };
+        return { ...old, imageUrl: c.imageUrl, displayName: c.displayName };
       }
       return {
         id: c.id,
-        imageUrl: resolveImageUrl(c.imageUrl),
+        imageUrl: c.imageUrl,
         displayName: c.displayName,
         x: (w * 0.15) + (i % 5) * (w * 0.15) + Math.random() * 40,
         y: h * 0.45 + Math.random() * (h * 0.25),
@@ -62,20 +55,27 @@ export function ShowcaseScene() {
 
   useEffect(() => {
     let alive = true;
-    async function poll() {
+    async function refresh() {
       try {
-        const res = await fetch(apiUrl("/api/cars"));
-        const data = await res.json();
-        if (alive) mergeCars(data.cars ?? []);
+        const cars = await listGalleryCars();
+        if (alive) mergeCars(cars);
       } catch {
         /* retry next tick */
       }
     }
-    poll();
-    const id = setInterval(poll, 4000);
+    refresh();
+    const id = setInterval(refresh, 2000);
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "color-cars-gallery-v1") refresh();
+    };
+    const onCustom = () => refresh();
+    window.addEventListener("storage", onStorage);
+    window.addEventListener(GALLERY_UPDATE_EVENT, onCustom);
     return () => {
       alive = false;
       clearInterval(id);
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener(GALLERY_UPDATE_EVENT, onCustom);
     };
   }, [mergeCars]);
 

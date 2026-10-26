@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
+import { assetUrl } from "@/lib/gallery-client";
 
 export function ScanQr() {
   const [src, setSrc] = useState<string | null>(null);
@@ -9,8 +10,8 @@ export function ScanQr() {
   useEffect(() => {
     const url =
       typeof window !== "undefined"
-        ? `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/scan`
-        : "/scan";
+        ? `${window.location.origin}${assetUrl("/scan")}`
+        : assetUrl("/scan");
     QRCode.toDataURL(url, { margin: 1, width: 120 }).then(setSrc);
   }, []);
 

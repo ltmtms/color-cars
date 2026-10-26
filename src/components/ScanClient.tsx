@@ -7,7 +7,7 @@ import {
   extractCarFromCanvas,
   loadOpenCV,
 } from "@/lib/opencv-extract";
-import { apiUrl } from "@/lib/api-base";
+import { addGalleryCar } from "@/lib/gallery-client";
 
 type Step = "camera" | "preview" | "done";
 
@@ -150,15 +150,7 @@ export function ScanClient() {
     setError(null);
     try {
       const blob = await canvasToPngBlob(canvas);
-      const form = new FormData();
-      form.append("image", blob, "car.png");
-      if (name.trim()) form.append("displayName", name.trim());
-      const res = await fetch(apiUrl("/api/cars"), { method: "POST", body: form });
-      if (!res.ok) {
-        const j = await res.json().catch(() => ({}));
-        throw new Error(j.error ?? "Upload failed");
-      }
-      const data = await res.json();
+      const data = await addGalleryCar(blob, name.trim() || undefined);
       setSubmittedId(data.id);
       setStep("done");
     } catch (e) {

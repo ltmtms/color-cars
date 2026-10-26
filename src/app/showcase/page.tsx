@@ -9,8 +9,8 @@ export default function ShowcasePage() {
           Car parade showcase
         </h1>
         <p className="text-slate-600 max-w-xl mx-auto">
-          Every coloured car from your class bounces along the sunny road. Keep
-          this page open on a big screen while kids scan at{" "}
+          Demo cars plus scans saved in this browser bounce along the sunny road.
+          Open showcase on the big screen in the same browser session, or scan at{" "}
           <Link href="/scan" className="text-rose-600 font-semibold underline">
             /scan
           </Link>
@@ -19,7 +19,7 @@ export default function ShowcasePage() {
       </div>
       <ShowcaseScene />
       <p className="text-center text-xs text-slate-500 mt-4">
-        Refreshes every 4 seconds — no reload needed.
+        Updates every 2 seconds and when new scans are saved in this browser.
       </p>
     </div>
   );
