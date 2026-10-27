@@ -11,8 +11,8 @@ export default function HomePage() {
       </h1>
       <p className="text-lg text-slate-600 mb-10 max-w-xl mx-auto">
         Print a friendly car outline, let kids go wild with crayons, then use
-        your phone camera to cut the car out with OpenCV and send it to the
-        sunny showcase.
+        your phone camera to cut the car out in-browser and send it to the
+        cartoon road showcase.
       </p>
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <Link
@@ -44,12 +44,12 @@ export default function HomePage() {
           stickers — go nuts!
         </li>
         <li>
-          <strong className="text-slate-800">Scan</strong> — OpenCV finds the
-          outline and keeps your colours.
+          <strong className="text-slate-800">Scan</strong> — canvas magic finds
+          your coloured car on the paper.
         </li>
         <li>
-          <strong className="text-slate-800">Showcase</strong> — every car
-          bounces and rolls together.
+          <strong className="text-slate-800">Showcase</strong> — cars drive a
+          cute cartoon road map together.
         </li>
       </ol>
     </div>

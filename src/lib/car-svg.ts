@@ -1,4 +1,4 @@
-/** Kid-friendly side-view car outline — thick stroke for printing & OpenCV contours */
+/** Kid-friendly side-view car outline — thick stroke for printing & scan extraction */
 export const CAR_VIEWBOX = "0 0 400 220";
 
 export function carOutlineSvg(options?: {

@@ -1,6 +1,6 @@
 # Colour-a-Car
 
-Kids **print** a car outline, **colour** it, **scan** with OpenCV in the browser, and watch cars join a **bouncing parade** on the showcase.
+Kids **print** a car outline, **colour** it, **scan** in the browser, and watch cars drive a **cartoon road map** on the showcase.
 
 ## Live (GitHub Pages)
 
@@ -22,7 +22,7 @@ There is no Node server on GitHub Pages. The parade uses:
 - **Demo cars** — bundled under `public/gallery/` (from `data/` at build time)
 - **New scans** — saved in this browser’s `localStorage` (showcase on the same device/browser sees them; demo cars appear for everyone)
 
-OpenCV.js still runs fully in the browser for extraction.
+Scan uses pure canvas / ImageData extraction (no OpenCV or WASM CDN).
 
 ## Run locally
 

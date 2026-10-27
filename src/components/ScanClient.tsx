@@ -5,8 +5,7 @@ import Link from "next/link";
 import {
   canvasToPngBlob,
   extractCarFromCanvas,
-  loadOpenCV,
-} from "@/lib/opencv-extract";
+} from "@/lib/canvas-extract";
 import { addGalleryCar } from "@/lib/gallery-client";
 
 type Step = "camera" | "preview" | "done";
@@ -20,15 +19,8 @@ export function ScanClient() {
   const [step, setStep] = useState<Step>("camera");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [opencvReady, setOpencvReady] = useState(false);
   const [name, setName] = useState("");
   const [submittedId, setSubmittedId] = useState<string | null>(null);
-
-  useEffect(() => {
-    loadOpenCV()
-      .then(() => setOpencvReady(true))
-      .catch(() => setError("Could not load OpenCV — try refreshing."));
-  }, []);
 
   const stopCamera = useCallback(() => {
     streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -87,45 +79,39 @@ export function ScanClient() {
     return canvas;
   }, []);
 
-  const runExtract = useCallback(async (source: HTMLCanvasElement) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const out = await extractCarFromCanvas(source);
-      const prev = previewRef.current;
-      if (prev) {
-        prev.width = out.width;
-        prev.height = out.height;
-        const ctx = prev.getContext("2d");
-        ctx?.drawImage(out, 0, 0);
+  const runExtract = useCallback(
+    async (source: HTMLCanvasElement) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const out = extractCarFromCanvas(source);
+        const prev = previewRef.current;
+        if (prev) {
+          prev.width = out.width;
+          prev.height = out.height;
+          prev.getContext("2d")?.drawImage(out, 0, 0);
+        }
+        stopCamera();
+        setStep("preview");
+      } catch (e) {
+        setError(
+          e instanceof Error ? e.message : "Extraction failed — try brighter light."
+        );
+      } finally {
+        setLoading(false);
       }
-      stopCamera();
-      setStep("preview");
-    } catch (e) {
-      setError(
-        e instanceof Error ? e.message : "Extraction failed — try brighter light."
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [stopCamera]);
+    },
+    [stopCamera]
+  );
 
   const onCapture = useCallback(async () => {
     const canvas = grabFrame();
     if (!canvas) return;
-    if (!opencvReady) {
-      setError("OpenCV still loading…");
-      return;
-    }
     await runExtract(canvas);
-  }, [grabFrame, opencvReady, runExtract]);
+  }, [grabFrame, runExtract]);
 
   const onFile = useCallback(
     async (file: File) => {
-      if (!opencvReady) {
-        setError("OpenCV still loading…");
-        return;
-      }
       const img = new Image();
       const url = URL.createObjectURL(file);
       img.onload = async () => {
@@ -140,7 +126,7 @@ export function ScanClient() {
       img.onerror = () => setError("Could not read that image.");
       img.src = url;
     },
-    [opencvReady, runExtract]
+    [runExtract]
   );
 
   const onSubmit = useCallback(async () => {
@@ -166,12 +152,15 @@ export function ScanClient() {
         Scan your car
       </h1>
       <p className="text-center text-slate-600 text-sm mb-6">
-        Fill the frame with your coloured paper. OpenCV finds the dark outline
-        and cuts the background away.
+        Fill the frame with your coloured paper. We find the painted car shape
+        (no extra downloads — works right in your browser).
       </p>
 
       {error && (
-        <p className="mb-4 rounded-xl bg-rose-100 text-rose-800 text-sm px-4 py-3" role="alert">
+        <p
+          className="mb-4 rounded-xl bg-rose-100 text-rose-800 text-sm px-4 py-3"
+          role="alert"
+        >
           {error}
         </p>
       )}
@@ -186,9 +175,6 @@ export function ScanClient() {
               className="w-full h-full object-cover"
             />
           </div>
-          <p className="text-xs text-center text-slate-500">
-            {opencvReady ? "OpenCV ready" : "Loading OpenCV…"}
-          </p>
           <button
             type="button"
             disabled={loading}
@@ -218,12 +204,11 @@ export function ScanClient() {
       {step === "preview" && (
         <div className="space-y-4">
           <div
-            className="rounded-2xl p-4 bg-[url('/checker.png')] bg-repeat aspect-[4/3] flex items-center justify-center ring-4 ring-amber-200"
+            className="rounded-2xl p-4 aspect-[4/3] flex items-center justify-center ring-4 ring-amber-200"
             style={{
               backgroundImage:
                 "linear-gradient(45deg,#eee 25%,transparent 25%),linear-gradient(-45deg,#eee 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#eee 75%),linear-gradient(-45deg,transparent 75%,#eee 75%)",
               backgroundSize: "16px 16px",
-              backgroundPosition: "0 0, 0 8px, 8px -8px, -8px 0",
             }}
           >
             <canvas ref={previewRef} className="max-w-full max-h-64 object-contain" />
@@ -261,7 +246,7 @@ export function ScanClient() {
 
       {step === "done" && (
         <div className="text-center space-y-4">
-          <p className="text-2xl font-bold text-emerald-600">You&apos;re in the parade!</p>
+          <p className="text-2xl font-bold text-emerald-600">You&apos;re on the road!</p>
           <Link
             href="/showcase"
             className="inline-block rounded-2xl bg-rose-500 text-white font-bold px-8 py-4"
